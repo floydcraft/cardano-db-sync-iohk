@@ -7,7 +7,7 @@ ENV APP=/opt/cardano-db-node \
     USER=root \
     PATH=$HOME/scripts:/root/.cabal/bin:/root/.ghcup/bin:$PATH
 
-ARG _VERSION=8.0.0
+ARG _VERSION=9.0.0
 
 ADD files/ .
 
@@ -24,5 +24,4 @@ RUN git clone --depth 1 --branch $_VERSION https://github.com/input-output-hk/ca
   && cp schema/* /schema \
   && cp scripts/* /scripts
 
-EXPOSE 3001 12798 12788 5432
-ENTRYPOINT [ "scripts/entrypoint.sh" ]
+ENTRYPOINT [ "bin/bash" ]
