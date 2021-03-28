@@ -20,7 +20,7 @@ steps:
     args: ['image', 'push', 'floydcraft/$_CONTAINER']
 
   - name: 'gcr.io/cloud-builders/gcloud'
-    args: [ 'alpha', 'builds', 'triggers', 'run', '--branch=$BRANCH_NAME', 'cardano-node-iohk-slim' ]
+    args: [ 'alpha', 'builds', 'triggers', 'run', '--branch=$BRANCH_NAME', 'cardano-db-sync-iohk-slim' ]
 
 timeout: 3600s
 options:
