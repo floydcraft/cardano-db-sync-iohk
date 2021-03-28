@@ -1,38 +1,34 @@
 #!/bin/bash
-set -e
-set -u
-set -o pipefail
+#set -e
+#set -u
+#set -o pipefail
+
+IMAGE_TAG=9.0.0
 
 if [[ ("$1" == "dev") || ("$1" == "slim") ]]; then
-  IMAGE="cardano-node-iohk-$1"
+  IMAGE="cardano-db-sync-iohk-$1"
 else
-  printf "please select an option (cardano node): dev or slim"
+  printf "please select an option (cardano-db-sync): dev or slim"
   exit 1
 fi
 
-if [[ ("$2" == "mainnet") || ("$2" == "testnet") ]]; then
-  CARDANO_NETWORK="$2"
-else
-  printf "please select an option (cardano network): mainnet or testnet "
-  exit 1
+if [[ "$2" == "pull" ]]; then
+  docker pull "floydcraft/$IMAGE:$IMAGE_TAG"
 fi
-
-if [[ "$3" == "pull" ]]; then
-  docker pull floydcraft/$IMAGE:latest
-fi
-
-printf "IMAGE=$IMAGE\nCARDANO_NETWORK=$CARDANO_NETWORK\n"
 
 if [[ "$( docker container inspect -f '{{.State.Running}}' "$IMAGE" )" == "true" ]]; then
-#  printf "ACTIVE CONTAINER found for: $IMAGE\nattaching to the container\n"
-#  docker exec -it "$IMAGE" bash
-  printf "not implemented"
-  exit 1
+  printf "ACTIVE CONTAINER found for: $IMAGE\nattaching to the container\n"
+  docker exec -it "$IMAGE" /bin/bash
 else
-#  printf "NO ACTIVE CONTAINER found for: $IMAGE\ncleaning containers and creating new container via run\n"
+  printf "NO ACTIVE CONTAINER found for: $IMAGE\ncleaning containers and creating new container via run\n"
+  docker rm "$IMAGE"
+  docker run --name "$IMAGE" -d -it  \
+    --entrypoint /bin/bash \
+    "floydcraft/$IMAGE:$IMAGE_TAG"
+#  docker exec -it "$IMAGE" /bin/bash
+fi
 
-  printf "not implemented"
-  exit 1
+
 #  docker container rm "$IMAGE"
 #  cardano-node run --config "/config/$CARDANO_NETWORK/config.json" \
 #  --topology "/config/topology.json" \
@@ -45,4 +41,3 @@ else
 #    --env "CARDANO_NETWORK=$CARDANO_NETWORK" \
 #    --env "CARDANO_NODE_SOCKET_PATH=/storage/$CARDANO_NETWORK/node.socket" \
 #    --entrypoint bash "floydcraft/$IMAGE:latest"
-fi

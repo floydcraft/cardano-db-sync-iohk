@@ -24,9 +24,10 @@ COPY --from=base /usr/lib/x86_64-linux-gnu/liblz4.* /usr/lib/x86_64-linux-gnu/
 COPY --from=base /usr/lib/x86_64-linux-gnu/libsodium.* /usr/lib/x86_64-linux-gnu/
 COPY --from=base /opt/ /opt/
 COPY --from=base /config/ /config/
+COPY --from=base /schema/ /schema/
 
 RUN apt-get update \
-    && apt-get install --no-install-recommends -y ca-certificates libcap2-bin ncurses-bin iproute2 curl wget xz-utils netbase sudo coreutils dnsutils net-tools procps tcptraceroute bc \
+    && apt-get install --no-install-recommends -y sudo libpq-dev libpq5 postgresql \
     && apt-get -y clean \
     && apt-get -y autoremove \
     && rm -rf /var/lib/apt/lists/*
